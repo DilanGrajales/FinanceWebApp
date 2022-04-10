@@ -1,0 +1,94 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Sign UP {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="row justify-content-center form-bg-image" data-background-lg="/static/assets/img/illustrations/signin.svg">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                <div class="text-center text-md-center mb-4 mt-md-0">
+                    <h1 class="mb-0 h3">
+                        Registrarse
+                    </h1>
+                    <br />
+                    <p>
+                        {% if msg %}
+                            {{ msg | safe }}
+                        {% else %}
+                            Introduce tus datos
+                        {% endif %}                                     
+                    </p> 
+                </div>
+                <form method="post" action="" class="mt-4">
+                    {% csrf_token %}
+                    <!-- Usuario -->
+                    <div class="form-group mb-4">
+                        <label for="email">Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">
+                                <span class="fas fa-user-circle"></span>
+                            </span>
+                            {{ form.username }}
+                        </div>  
+                        <span class="text-error">{{ form.username.errors }}</span>
+                    </div>
+                    <!-- ./Usuario -->
+
+                    <!-- E-mail -->
+                    <div class="form-group mb-4">
+                        <label for="email">E-mail</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">
+                                <span class="fas fa-envelope"></span>
+                            </span>
+                            {{ form.email }}
+                        </div>  
+                        <span class="text-error">{{ form.email.errors }}</span>
+                    </div>
+                    <!-- ./E-mail -->
+
+                    <!-- Contrasena y confirmacion -->
+                    <div class="form-group mb-4">
+                        <label for="password">Contrasena</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon2">
+                                <span class="fas fa-unlock-alt"></span>
+                            </span>
+                            {{ form.password1 }}
+                        </div>  
+                        <span class="text-error">{{ form.password1.errors }}</span>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="password">Confirma tu contrasena</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon2">
+                                <span class="fas fa-unlock-alt"></span>
+                            </span>
+                            {{ form.password2 }}
+                        </div>  
+                        <span class="text-error">{{ form.password2.errors }}</span>
+                    </div>
+                    <!-- ./Contrasena y confirmacion -->
+                    <div class="d-grid">
+                        <button type="submit" name="register" class="btn btn-gray-800">Registrarse</button>
+                    </div>
+                </form>
+                <br />
+
+                <div class="d-flex justify-content-center align-items-center mt-4">
+                    <span class="fw-normal">
+                        Ya tengo una cuenta.
+                        <a href="{% url 'login' %}" class="fw-bold">Iniciar sesion</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
