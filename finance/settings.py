@@ -126,3 +126,17 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Reestablecimiento de contraseña por correo electronico
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'noreply@finance.net'
+# EMAIL_HOST_PASSWORD = 'finance_web+app.2022'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '193075@uptapachula.edu.mx'
+EMAIL_HOST_PASSWORD = 'pousashadanna3'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

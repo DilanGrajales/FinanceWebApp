@@ -52,7 +52,7 @@
                                 Recordarme
                             </label>
                         </div>
-                        <div><a href="/page-forgot-password.html" class="mb-1 small fw-bold text-info">No recuerdo mi contrasena</a></div>
+                        <div><a href="{% url 'password_reset' %}" class="mb-1 small fw-bold text-info">No recuerdo mi contrasena</a></div>
                     </div>
                     
                     <div class="d-grid">
@@ -64,7 +64,7 @@
                 <div class="d-flex justify-content-center align-items-center mt-4">
                     <span class="fw-normal">
                         No tengo una cuenta.
-                        <a href="{% url 'register' %}" class="fw-bold">Crear una cuenta</a>
+                        <a href="{% url 'register' %}" class="fw-bold text-danger">Crear una cuenta</a>
                     </span>
                 </div>
             </div>
