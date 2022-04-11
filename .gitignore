@@ -10,9 +10,6 @@ apps/*/migrations/
 apps/*/__init__.py
 apps/__init__.py
 finance/__init__.py
-db.sqlite3
-venv_finance/
-db.sqlite3
 apps/static/
 
 # Compiled Java class files
