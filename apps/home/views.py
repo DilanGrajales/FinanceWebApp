@@ -21,21 +21,20 @@ def index(request):
 
 
 # * Registro
-def registro(request):
+def registro(request, type_id):
     # Obtener usuario
     _userid = request.user.id
     usuario = User.objects.get(id=_userid)
     
     if (request.method == "POST") and ("guardar" in request.POST):
         # Obtener datos
-        _type = 1
         _date = request.POST['date']
         _amount = request.POST['amount']
         _category = request.POST['category']
         _description = request.POST['description']
         
         # Guardar registro
-        MoneyRegister.objects.create(user=usuario, type=_type, date=_date, amount=_amount, category_id=_category, description=_description)
+        MoneyRegister.objects.create(user=usuario, type=type_id, date=_date, amount=_amount, category_id=_category, description=_description)
         
         # Redireccionar
         return redirect('home')

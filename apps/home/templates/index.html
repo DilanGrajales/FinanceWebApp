@@ -1,0 +1,136 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<div class="card border-0 shadow mb-4 m-auto">
+    <div class="card-header">
+        <h4>Transacciones</h4>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-centered table-hover table-nowrap mb-0 border-0 rounded" id="transacciones">
+            <thead class="thead-light">
+                <tr>
+                    <th class="border-0 rounded-start">#</th>
+                    <th class="border-0">Categoria</th>
+                    <th class="border-0">Fecha</th>
+                    <th class="border-0">Monto</th>
+                    <th class="border-0">Opciones</th>
+                    <th class="border-0 rounded-end">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for transaccion in transacciones %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ transaccion.category }}</td>
+                    <td>{{ transaccion.date }}</td>
+                    <td>{{ transaccion.amount }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary">Editar</a>
+                    </td>
+                    
+                    <td>
+                        <a class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>1</td>
+                    <td class="fw-bold align-items-center">
+                        <i class="fas fa-utensils text-muted me-2"></i>
+                        Comida
+                    </td>
+                    <td>Hoy</td>
+                    <td>
+                        <p class="text-success fw-bold">$900</p>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">
+                            <i class="fas fa-info-circle icon-sx"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit icon-sx"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash icon-sx"></i>
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">Total: </div>
+</div>
+
+<!-- ? Modal registros -->
+<div class="modal fade" id="modal-registros">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h4 modal-title w-100 text-center">Registrar</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-registros">
+                <!-- Cuerpo en registro.html -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ? ./Modal registros -->
+{% endblock content %}
+
+
+
+{% block javascripts %}
+<script>
+    $("#transacciones").DataTable({
+        "responsive": true,
+		"autoWidth": false,
+        "ordering": false,
+        "paging": false,
+		"language": {
+			"info": "Mostrando _START_ a _END_ de _TOTAL_ totales",
+			"infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+			"infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "zeroRecords": "No se encontraron registros coincidentes",
+            "emptyTable": "Aun no se han registrado gastos / ingresos",
+			"search": "Buscar:",
+			"loadingRecords": "Cargando...",
+			"processing": "Procesando...",
+		},
+    });
+
+    // Agregar un ingreso
+    $("#ingresos-btn").on("click", function () {
+        $.ajax({
+            url: 'registro/1',
+            type: 'GET',
+            success: function (data) {
+                $('#modal-registros').modal('show');
+                $('#modal-registros .modal-body-registros').html(data);
+            }
+        });
+    });
+
+    // Agregar un egreso
+    $("#egresos-btn").on("click", function () {
+        $.ajax({
+            url: 'registro/2',
+            type: 'GET',
+            success: function (data) {
+                $('#modal-registros').modal('show');
+                $('#modal-registros .modal-body-registros').html(data);
+            }
+        });
+    });
+
+    // Estilos personalizados para componentes de datatables
+    $("#transacciones_filter").addClass("pb-2 pe-0");
+    $("#transacciones_filter input").addClass("form-control-sm");
+    $("#transacciones_info").addClass("pt-4 ps-0");
+</script>
+{% endblock javascripts %}
