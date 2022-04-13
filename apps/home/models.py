@@ -1,4 +1,5 @@
 import datetime
+from operator import iconcat
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,8 +13,9 @@ type_choices = [
 
 # Create your models here.
 class Categories(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     type = models.SmallIntegerField(choices=type_choices, verbose_name='Tipo', default=0)
+    icon = models.CharField(max_length=100, verbose_name='Icono')
 
     def __str__(self):
         return self.name

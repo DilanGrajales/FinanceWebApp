@@ -13,7 +13,13 @@ from django.db import transaction
 #  * Pagina de inicio del usuario
 @login_required(login_url="/login/")
 def index(request):
-    transacciones = MoneyRegister.objects.filter(user=request.user)
+    transacciones = MoneyRegister.objects.filter(user=request.user).order_by('-date')
+    hoy = datetime.date.today().strftime('%Y-%m-%d')
+    
+    for transaccion in transacciones:
+        if str(transaccion.date) == hoy:
+            transaccion.date = 'Hoy'
+    
     context = {
         'segment': 'categories',
         'transacciones': transacciones,
@@ -49,7 +55,9 @@ def registro(request, type_id):
         except:
             return reverse(reverse_lazy('registro', kwargs={'type_id': type_id}))
     
-    context = {'categories': Categories.objects.filter(type=type_id)}
+    context = {
+        'categories': Categories.objects.filter(type=type_id),
+    }
     
     return render(request, 'registro.html', context)
     
