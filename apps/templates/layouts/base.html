@@ -33,8 +33,16 @@
 		<!-- Include de barra lateral -->
 		{% include 'includes/sidebar.html' %}
 
+		<!-- Titulos de las pantallas -->
+		<div class="d-block mb-4">
+			<h2 class="h4">
+				{% block title %}{% endblock title %}
+			</h2>
+		</div>
+
 		<!-- Contenido pagina -->
-		{% block content %}{% endblock content %}
+		{% block content %}
+		{% endblock content %}
 		<!-- ./Contenido pagina -->
 
 		<!-- Include de footer -->

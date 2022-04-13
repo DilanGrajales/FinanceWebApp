@@ -26,7 +26,7 @@ class Categories(models.Model):
 
 class MoneyRegister(models.Model):
     user = models.ForeignKey(User(id), on_delete=models.CASCADE, verbose_name='Usuario')
-    date = models.DateField(default=datetime.date.today(), verbose_name='Fecha')
+    date = models.DateField(verbose_name='Fecha')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Monto')
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, verbose_name='Categoria')
     description = models.TextField(verbose_name='Descripción', null=True, blank=True)

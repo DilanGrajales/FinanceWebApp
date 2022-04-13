@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 from apps.home.models import *
 from django.db import transaction
@@ -36,14 +36,20 @@ def registro(request, type_id):
         _category = request.POST['category']
         _description = request.POST['description']
         
-        with transaction.atomic():
-            # Guardar registro
-            MoneyRegister.objects.create(user=usuario, type=type_id, date=_date, amount=_amount, category_id=_category, description=_description)
-            
-            # Redireccionar
-            return redirect('home')
+        if len(_date) == 0:
+            _date = datetime.date.today().strftime('%Y-%m-%d')
+        
+        try:
+            with transaction.atomic():
+                # Guardar registro
+                MoneyRegister.objects.create(user=usuario, date=_date, amount=_amount, category_id=_category, description=_description)
+                
+                # Redireccionar
+                return redirect('home')
+        except:
+            return reverse(reverse_lazy('registro', kwargs={'type_id': type_id}))
     
-    context = {'categories': Categories.objects.all()}
+    context = {'categories': Categories.objects.filter(type=type_id)}
     
     return render(request, 'registro.html', context)
     

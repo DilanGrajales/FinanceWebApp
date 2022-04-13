@@ -1,11 +1,9 @@
 {% extends 'layouts/base.html' %}
 
-{% block content %}
+{% block title %}Transacciones{% endblock title %}
 
+{% block content %}
 <div class="card border-0 shadow mb-4 m-auto">
-    <div class="card-header">
-        <h4>Transacciones</h4>
-    </div>
     <div class="card-body table-responsive">
         <table class="table table-centered table-hover table-nowrap mb-0 border-0 rounded" id="transacciones">
             <thead class="thead-light">
@@ -19,13 +17,14 @@
                 </tr>
             </thead>
             <tbody>
-
                 {% for transaccion in transacciones %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ transaccion.category }}</td>
                     <td>{{ transaccion.date }}</td>
-                    <td>{{ transaccion.amount }}</td>
+                    <td>
+                        <p class="fw-bold text-{% if transaccion.category.type == 1 %}success{% else %}danger{% endif %}">${{ transaccion.amount }}</td>p>
+                    </td>
                     <td>
                         <a class="btn btn-sm btn-primary">Editar</a>
                     </td>
@@ -71,7 +70,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="h4 modal-title w-100 text-center">Registrar</h2>
+                <h2 class="h4 modal-title w-100 text-center">Ingresos</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body modal-body-registros">
