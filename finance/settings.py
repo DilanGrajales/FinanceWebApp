@@ -74,7 +74,8 @@ DATABASES = {
         'USER': 'postgres',  # Usuario de la base de datos PostgreSQL
         'PASSWORD': 'admin',  # Contraseña de usuario PostgreSQL
         'HOST': '',  # Ubicacion de la base de datos
-        'DATABASE_PORT': '5432',  # Puerto utilizado
+        'DATABASE_PORT': '5432',  # Puerto utilizado,
+        'ATOMIC_REQUESTS': True,
     }
 }
 

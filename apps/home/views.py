@@ -6,6 +6,7 @@ from django.template import loader
 from django.urls import reverse
 from django.contrib.auth.models import User
 from apps.home.models import *
+from django.db import transaction
 
 
 # Create your views here.
@@ -21,6 +22,8 @@ def index(request):
 
 
 # * Registro
+@login_required(login_url="/login/")
+@transaction.atomic()
 def registro(request, type_id):
     # Obtener usuario
     _userid = request.user.id
@@ -33,11 +36,12 @@ def registro(request, type_id):
         _category = request.POST['category']
         _description = request.POST['description']
         
-        # Guardar registro
-        MoneyRegister.objects.create(user=usuario, type=type_id, date=_date, amount=_amount, category_id=_category, description=_description)
-        
-        # Redireccionar
-        return redirect('home')
+        with transaction.atomic():
+            # Guardar registro
+            MoneyRegister.objects.create(user=usuario, type=type_id, date=_date, amount=_amount, category_id=_category, description=_description)
+            
+            # Redireccionar
+            return redirect('home')
     
     context = {'categories': Categories.objects.all()}
     
