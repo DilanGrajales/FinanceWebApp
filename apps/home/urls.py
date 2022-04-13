@@ -2,10 +2,11 @@ from django.urls import path, re_path
 from apps.home import views
 
 urlpatterns = [
-    # Home
+    # Inicio
     path('', views.index, name='home'),
+    path('registro/', views.registro, name='registro'),
 
-    # Matches any html file
+    # Coincidencia con cualquier archivo html
     re_path(r'^.*\.*', views.pages, name='pages'),
 
 ]

@@ -33,21 +33,6 @@
 		<!-- Include de barra lateral -->
 		{% include 'includes/sidebar.html' %}
 
-		<!-- Content header -->
-		<div class="row mb-2">
-			<!-- Titulo -->
-			<div class="col-sm-6">
-				<h3 class="m-0">{% block title %}{% endblock title %}</h3>
-			</div>
-			<!-- ./Titulo -->
-			<!-- Lateral derecho -->
-			<div class="col-sm-6">
-				<div class='float-sm-right'>{% block breadcrumb %}{% endblock breadcrumb %}</div>
-			</div>
-			<!-- ./Lateral derecho -->
-		</div>
-		<!-- ./Content header -->
-
 		<!-- Contenido pagina -->
 		{% block content %}{% endblock content %}
 		<!-- ./Contenido pagina -->

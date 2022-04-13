@@ -1,28 +1,35 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
 
 # Choices
-category_choices = [
-    (0, 'SELECCIONE'),
-    (1, 'COMESTIBLES'),
-    (2, 'RESTAURANTES'),
-    (3, 'TRANSPORTE'),
-    (4, 'SALUD'),
-    (5, 'TIEMPO LIBRE'),
-    (6, 'COMPRAS'),
-    (7, 'REGALOS'),
-    (8, 'PRESTAMOS'),
-    (9, 'AHORROS'),
+type_choices = [
+    (1, 'INGRESO'),
+    (2, 'EGRESO'),
 ]
 
+
 # Create your models here.
+class Categories(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    type = models.SmallIntegerField(choices=type_choices, verbose_name='Tipo', default=0)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        db_table = 'CATEGORY_CAT'
+        verbose_name = 'CATEGORIA'
+        verbose_name_plural = 'CATEGORIAS'
+
+
 class MoneyRegister(models.Model):
-    user = models.OneToOneField(User(id), on_delete=models.CASCADE, verbose_name='Usuario')
-    date = models.DateField(verbose_name='Fecha')
+    user = models.ForeignKey(User(id), on_delete=models.CASCADE, verbose_name='Usuario')
+    date = models.DateField(default=datetime.date.today(), verbose_name='Fecha')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Monto')
-    category = models.SmallIntegerField(choices=category_choices, verbose_name='Categoria')
-    description = models.TextField(verbose_name='Descripción', unique=True)
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, verbose_name='Categoria')
+    description = models.TextField(verbose_name='Descripción', null=True, blank=True)
 
     def __str__(self):
         return f'{self.user} - {self.amount} - {self.category}'

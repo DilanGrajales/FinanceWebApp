@@ -1,19 +1,49 @@
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template import loader
 from django.urls import reverse
+from django.contrib.auth.models import User
+from apps.home.models import *
 
 
 # Create your views here.
 #  * Pagina de inicio del usuario
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
+    transacciones = MoneyRegister.objects.filter(user=request.user)
+    context = {
+        'segment': 'categories',
+        'transacciones': transacciones,
+    }
+    return render(request, 'index.html', context)
 
-    return render(request, 'home/dashboard.html', context)
 
+# * Registro
+def registro(request):
+    # Obtener usuario
+    _userid = request.user.id
+    usuario = User.objects.get(id=_userid)
+    
+    if (request.method == "POST") and ("guardar" in request.POST):
+        # Obtener datos
+        _type = 1
+        _date = request.POST['date']
+        _amount = request.POST['amount']
+        _category = request.POST['category']
+        _description = request.POST['description']
+        
+        # Guardar registro
+        MoneyRegister.objects.create(user=usuario, type=_type, date=_date, amount=_amount, category_id=_category, description=_description)
+        
+        # Redireccionar
+        return redirect('home')
+    
+    context = {'categories': Categories.objects.all()}
+    
+    return render(request, 'registro.html', context)
+    
 
 # * Pagina de Not found / Server error
 @login_required(login_url="/login/")
@@ -27,14 +57,13 @@ def pages(request):
         if load_template == 'admin':
             return HttpResponseRedirect(reverse('admin:index'))
         context['segment'] = load_template
+        print(context['segment'])
 
         html_template = loader.get_template('home/' + load_template)
         return HttpResponse(html_template.render(context, request))
     # 404 error page
     except template.TemplateDoesNotExist:
-        html_template = loader.get_template('home/page-404.html')
-        return HttpResponse(html_template.render(context, request))
+        return render(request, 'home/page-404.html', context)
     # 505 error page
     except:
-        html_template = loader.get_template('home/page-500.html')
-        return HttpResponse(html_template.render(context, request))
+        return render(request, 'home/page-500.html', context)
