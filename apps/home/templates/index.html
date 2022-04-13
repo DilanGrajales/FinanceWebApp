@@ -50,21 +50,37 @@
     <div class="card-footer">Total: </div>
 </div>
 
-<!-- ? Modal registros -->
-<div class="modal fade" id="modal-registros">
+<!-- ? Modal ingresos -->
+<div class="modal fade" id="modal-ingresos">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="h4 modal-title w-100 text-center">Ingresos</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body modal-body-registros">
+            <div class="modal-body modal-body-ingresos">
                 <!-- Cuerpo en registro.html -->
             </div>
         </div>
     </div>
 </div>
-<!-- ? ./Modal registros -->
+<!-- ? ./Modal ingresos -->
+
+<!-- ? Modal egresos -->
+<div class="modal fade" id="modal-egresos">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h4 modal-title w-100 text-center">Egresos</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-egresos">
+                <!-- Cuerpo en registro.html -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ? ./Modal egresos -->
 {% endblock content %}
 
 
@@ -94,8 +110,8 @@
             url: 'registro/1',
             type: 'GET',
             success: function (data) {
-                $('#modal-registros').modal('show');
-                $('#modal-registros .modal-body-registros').html(data);
+                $('#modal-ingresos').modal('show');
+                $('#modal-ingresos .modal-body-ingresos').html(data);
             }
         });
     });
@@ -106,8 +122,8 @@
             url: 'registro/2',
             type: 'GET',
             success: function (data) {
-                $('#modal-registros').modal('show');
-                $('#modal-registros .modal-body-registros').html(data);
+                $('#modal-egresos').modal('show');
+                $('#modal-egresos .modal-body-egresos').html(data);
             }
         });
     });
