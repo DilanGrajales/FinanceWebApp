@@ -7,6 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 from apps.home.models import *
 from django.db import transaction
+from django.db.models import *
 
 
 # Create your views here.
@@ -20,9 +21,33 @@ def index(request):
         if str(transaccion.date) == hoy:
             transaccion.date = 'Hoy'
     
+    # Ingresos
+    try:
+        ingresos = transacciones.aggregate(total=Sum('amount', filter=Q(category__type=1)))
+        if ingresos['total'] is None:
+            ingresos = 0
+        else:
+            ingresos = ingresos['total']
+    except:
+        ingresos = 0
+        
+    # Egresos
+    try:
+        egresos = transacciones.aggregate(total=Sum('amount', filter=Q(category__type=2)))
+        if egresos['total'] is None:
+            egresos = 0
+        else:
+            egresos = egresos['total']
+    except:
+        egresos = 0
+        
+        
     context = {
         'segment': 'categories',
         'transacciones': transacciones,
+        'total': ingresos - egresos,
+        'ingresos': ingresos,
+        'egresos': egresos
     }
     return render(request, 'index.html', context)
 
@@ -60,7 +85,26 @@ def registro(request, type_id):
     }
     
     return render(request, 'registro.html', context)
+
+
+# * Acciones
+@login_required(login_url="/login/")
+@transaction.atomic()
+def acciones(request, id):
+    # Editar
     
+    
+    # Eliminar
+    if (request.method == "GET" and "eliminar" in request.GET):
+        with transaction.atomic():
+            # Eliminar registro
+            MoneyRegister.objects.get(id=id).delete()
+            
+            # Redireccionar
+        return redirect('home')
+    return redirect('home')
+    
+
 
 # * Pagina de Not found / Server error
 @login_required(login_url="/login/")
