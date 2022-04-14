@@ -11,6 +11,7 @@ apps/*/__init__.py
 apps/__init__.py
 finance/__init__.py
 apps/static/
+venv_finance/
 
 # Compiled Java class files
 *.class

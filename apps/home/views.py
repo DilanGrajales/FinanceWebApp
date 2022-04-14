@@ -42,10 +42,85 @@ def index(request):
             egresos = egresos['total']
     except:
         egresos = 0
-        
-        
+
+    # Datos para cards de efectivo y tarjeta
+    efectivo = []
+    try:
+        try:
+            e_data = transacciones.aggregate(
+                ingresos=Sum('amount', filter=Q(account=1, category__type=1))
+            )
+
+            if e_data['ingresos'] is None:
+                e_data['ingresos'] = 0
+
+            ingresos = e_data['ingresos']
+            efectivo.append(ingresos)
+        except:
+            ingresos = 0
+            efectivo.append(ingresos)
+
+        try:
+            e_data = transacciones.aggregate(
+                egresos=Sum('amount', filter=Q(account=1, category__type=2))
+            )
+
+            if e_data['egresos'] is None:
+                e_data['egresos'] = 0
+
+            egresos = e_data['egresos']
+            efectivo.append(egresos)
+        except:
+            egresos = 0
+            efectivo.append(egresos)
+
+        balance = ingresos - egresos
+        efectivo.append(balance)
+    except:
+        balance = ingresos - egresos
+        efectivo.append(balance)
+    
+    tarjeta = []
+    try:
+        try:
+            e_data = transacciones.aggregate(
+                ingresos=Sum('amount', filter=Q(account=2, category__type=1))
+            )
+
+            if e_data['ingresos'] is None:
+                e_data['ingresos'] = 0
+
+            ingresos = e_data['ingresos']
+            tarjeta.append(ingresos)
+        except:
+            ingresos = 0
+            tarjeta.append(ingresos)
+
+        try:
+            e_data = transacciones.aggregate(
+                egresos=Sum('amount', filter=Q(account=2, category__type=2))
+            )
+
+            if e_data['egresos'] is None:
+                e_data['egresos'] = 0
+
+            egresos = e_data['egresos']
+            tarjeta.append(egresos)
+        except:
+            egresos = 0
+            tarjeta.append(egresos)
+
+        balance = ingresos - egresos
+        tarjeta.append(balance)
+    except:
+        balance = ingresos - egresos
+        tarjeta.append(balance)
+
+
     context = {
         'segment': 'categories',
+        'efectivo': efectivo,
+        'tarjeta': tarjeta,
         'transacciones': transacciones,
         'total': ingresos - egresos,
         'ingresos': ingresos,
@@ -55,15 +130,15 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+def cuentas(request, account_id):
+    
+    return render(request, 'cuentas.html', {})
+
 
 # * Ingreso
 @login_required(login_url="/login/")
 @transaction.atomic()
 def ingreso(request):
-    # Obtener usuario
-    _userid = request.user.id
-    usuario = User.objects.get(id=_userid)
-    
     if (request.method == "POST") and ("guardar" in request.POST):
         # Obtener datos
         _date = request.POST['date']
@@ -77,7 +152,7 @@ def ingreso(request):
         try:
             with transaction.atomic():
                 # Guardar registro
-                MoneyRegister.objects.create(user=usuario, date=_date, account=_account, amount=_amount, category_id=_account, description=_description)
+                MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_account, description=_description)
                 
                 # Redireccionar
                 return redirect('home')
@@ -94,11 +169,7 @@ def ingreso(request):
 # * Egreso
 @login_required(login_url="/login/")
 @transaction.atomic()
-def egreso(request):
-    # Obtener usuario
-    _userid = request.user.id
-    usuario = User.objects.get(id=_userid)
-    
+def egreso(request):	
     if (request.method == "POST") and ("guardar" in request.POST):
         # Obtener datos
         _date = request.POST['date']
@@ -113,7 +184,7 @@ def egreso(request):
         try:
             with transaction.atomic():
                 # Guardar registro
-                MoneyRegister.objects.create(user=usuario, date=_date, account=_account, amount=_amount, category_id=_category, description=_description)
+                MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_category, description=_description)
                 
                 # Redireccionar
                 return redirect('home')
@@ -176,7 +247,6 @@ def acciones(request, id):
     
     return render(request, 'editar.html', context)
 
-    
 
 # * Pagina de Not found / Server error
 @login_required(login_url="/login/")
