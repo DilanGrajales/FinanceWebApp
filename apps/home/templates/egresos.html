@@ -1,0 +1,82 @@
+<form action="{% url 'egreso' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group mb-3">
+        <label>Cuenta de destino</label>
+        <br>
+        <div class="row">
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="1" checked> Efectivo </label>
+            </div>
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="2"> Tarjeta </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        <label for="amount">Monto</label>
+        <input type="number" class="form-control" step="0.01" id="amount" name="amount" placeholder="Monto" required>
+    </div>
+    <div class="form-group mb-3">
+        <label for="category">Categoría</label>
+        <select class="form-control" id="category-option" name="category">
+            <option value="SelectedDefault" selected disabled>SELECCIONE</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <label for="description">Descripción</label>
+        <input type="text" class="form-control" id="description" name="description" placeholder="Descripción">
+    </div>
+    <div class="mb-3">
+        <label for="date">Fecha</label>
+        <div class="input-group">
+            <span class="input-group-text">
+                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+            </span>
+            <input data-datepicker class="form-control" id="date" name="date" type="text" placeholder="yyyy-mm-dd">                                               
+          </div>
+    </div>
+    <div class="modal-footer pb-0">
+        <button type="submit" class="btn btn-secondary guardar-btn" name="guardar" disabled>Guardar</button>
+        <button type="button" class="btn ms-auto btn-danger" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+</form>
+
+
+{% block javascripts %}
+<script>
+    // Datepicker
+    var datepickers = [].slice.call(document.querySelectorAll('[data-datepicker]'))
+    var datepickersList = datepickers.map(function (el) {
+        return new Datepicker(el, {
+            format:"yyyy-mm-dd",
+            buttonClass: 'btn'
+        });
+    });
+
+    // Eviar evento change al select
+    $(document).on('change', '#category-option', function(event) {
+        selected_category();
+    });
+
+    // Funcion para seleccionar categoria
+    function selected_category() {
+        let select_item;
+
+        // Obtencion de id de la categoria
+        select_item = $('#category-option').val();
+
+        // Seleccion de periodo
+        if (select_item != 'SelectDefault') {
+            $('.guardar-btn').prop("disabled", false);
+        } else {
+            $('.guardar-btn').prop("checked", true);
+
+        }
+    }
+</script>
+{% endblock javascripts %}

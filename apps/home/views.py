@@ -1,3 +1,4 @@
+from datetime import datetime
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -52,10 +53,11 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-# * Registro
+
+# * Ingreso
 @login_required(login_url="/login/")
 @transaction.atomic()
-def registro(request, type_id):
+def ingreso(request):
     # Obtener usuario
     _userid = request.user.id
     usuario = User.objects.get(id=_userid)
@@ -63,6 +65,42 @@ def registro(request, type_id):
     if (request.method == "POST") and ("guardar" in request.POST):
         # Obtener datos
         _date = request.POST['date']
+        _amount = request.POST['amount']
+        _account = request.POST['account']
+        _description = request.POST['description']
+        
+        if len(_date) == 0:
+            _date = datetime.date.today().strftime('%Y-%m-%d')
+        
+        try:
+            with transaction.atomic():
+                # Guardar registro
+                MoneyRegister.objects.create(user=usuario, date=_date, account=_account, amount=_amount, category_id=_account, description=_description)
+                
+                # Redireccionar
+                return redirect('home')
+        except:
+            return reverse(reverse_lazy('home'))
+    
+    context = {
+        'categories': Categories.objects.filter(type=1)
+    }
+    
+    return render(request, 'ingresos.html', context)
+
+
+# * Registro
+@login_required(login_url="/login/")
+@transaction.atomic()
+def egreso(request):
+    # Obtener usuario
+    _userid = request.user.id
+    usuario = User.objects.get(id=_userid)
+    
+    if (request.method == "POST") and ("guardar" in request.POST):
+        # Obtener datos
+        _date = request.POST['date']
+        _account = request.POST['account']
         _amount = request.POST['amount']
         _category = request.POST['category']
         _description = request.POST['description']
@@ -73,25 +111,25 @@ def registro(request, type_id):
         try:
             with transaction.atomic():
                 # Guardar registro
-                MoneyRegister.objects.create(user=usuario, date=_date, amount=_amount, category_id=_category, description=_description)
+                MoneyRegister.objects.create(user=usuario, date=_date, account=_account, amount=_amount, category_id=_category, description=_description)
                 
                 # Redireccionar
                 return redirect('home')
         except:
-            return reverse(reverse_lazy('registro', kwargs={'type_id': type_id}))
+            return reverse(reverse_lazy('home'))
     
     context = {
-        'categories': Categories.objects.filter(type=type_id),
+        'categories': Categories.objects.filter(type=2),
     }
     
-    return render(request, 'registro.html', context)
+    return render(request, 'egresos.html', context)
 
 
 # * Acciones
 @login_required(login_url="/login/")
 @transaction.atomic()
 def acciones(request, id):
-    # Editar
+    # ! Editar
     
     
     # Eliminar
@@ -118,7 +156,6 @@ def pages(request):
         if load_template == 'admin':
             return HttpResponseRedirect(reverse('admin:index'))
         context['segment'] = load_template
-        print(context['segment'])
 
         html_template = loader.get_template('home/' + load_template)
         return HttpResponse(html_template.render(context, request))

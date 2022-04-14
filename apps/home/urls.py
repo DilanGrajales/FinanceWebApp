@@ -4,7 +4,8 @@ from apps.home import views
 urlpatterns = [
     # Inicio
     path('', views.index, name='home'),
-    path('registro/<int:type_id>', views.registro, name='registro'),
+    path('ingreso', views.ingreso, name='ingreso'),
+    path('egreso', views.egreso, name='egreso'),
     path('acciones/<int:id>', views.acciones, name='acciones'),
 
     # Coincidencia con cualquier archivo html

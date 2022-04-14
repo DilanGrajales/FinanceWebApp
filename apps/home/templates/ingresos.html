@@ -1,17 +1,22 @@
-<form action="{% url 'registro' categories.0.type %}" method="POST">
+<form action="{% url 'ingreso' %}" method="POST">
     {% csrf_token %}
     <div class="form-group mb-3">
         <label for="amount">Monto</label>
-        <input type="number" class="form-control" step="0.01" id="amount" name="amount" placeholder="Monto">
+        <input type="number" class="form-control" step="0.01" id="amount" name="amount" placeholder="Monto" required>
     </div>
     <div class="form-group mb-3">
-        <label for="category">Categoría</label>
-        <select class="form-control" id="category" name="category">
-            <option value="SelectedDefault" selected disabled>SELECCIONE</option>
-            {% for category in categories %}
-                <option value="{{ category.id }}">{{ category }}</option>
-            {% endfor %}
-        </select>
+        <label>Cuenta de destino</label>
+        <br>
+        <div class="row">
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="1" checked> Efectivo </label>
+            </div>
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="2"> Tarjeta </label>
+            </div>
+        </div>
     </div>
     <div class="form-group mb-3">
         <label for="description">Descripción</label>
@@ -27,7 +32,7 @@
           </div>
     </div>
     <div class="modal-footer pb-0">
-        <button type="submit" class="btn btn-secondary" name="guardar" id="guardar-btn">Guardar</button>
+        <button type="submit" class="btn btn-secondary guardar-btn" name="guardar">Guardar</button>
         <button type="button" class="btn ms-auto btn-danger" data-bs-dismiss="modal">Cerrar</button>
     </div>
 </form>

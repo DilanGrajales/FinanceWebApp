@@ -1,5 +1,4 @@
 import datetime
-from operator import iconcat
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -10,6 +9,11 @@ type_choices = [
     (2, 'EGRESO'),
 ]
 
+account_choices = [
+    (1, 'EFECTIVO'),
+    (2, 'TARJETA'),
+]
+
 
 # Create your models here.
 class Categories(models.Model):
@@ -18,7 +22,11 @@ class Categories(models.Model):
     icon = models.CharField(max_length=100, verbose_name='Icono')
 
     def __str__(self):
-        return self.name
+        if self.type == 1:
+            type = 'Ingreso'
+        else:
+            type = 'Egreso'
+        return f'{type} - {self.name}'
     
     class Meta:
         db_table = 'CATEGORY_CAT'
@@ -28,6 +36,7 @@ class Categories(models.Model):
 
 class MoneyRegister(models.Model):
     user = models.ForeignKey(User(id), on_delete=models.CASCADE, verbose_name='Usuario')
+    account = models.SmallIntegerField(choices=account_choices, verbose_name='Cuenta de destino', default=1)
     date = models.DateField(verbose_name='Fecha')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Monto')
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, verbose_name='Categoria')
