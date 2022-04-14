@@ -1,4 +1,5 @@
 from datetime import datetime
+from multiprocessing import context
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -50,6 +51,7 @@ def index(request):
         'ingresos': ingresos,
         'egresos': egresos
     }
+    
     return render(request, 'index.html', context)
 
 
@@ -89,7 +91,7 @@ def ingreso(request):
     return render(request, 'ingresos.html', context)
 
 
-# * Registro
+# * Egreso
 @login_required(login_url="/login/")
 @transaction.atomic()
 def egreso(request):
@@ -129,20 +131,52 @@ def egreso(request):
 @login_required(login_url="/login/")
 @transaction.atomic()
 def acciones(request, id):
-    # ! Editar
+    registro = MoneyRegister.objects.get(id=id)
+    categoria = Categories.objects.filter(type=registro.category.type).exclude(id=registro.category.id)
     
+    # Editar
+    if (request.method == "POST"):
+        # Obtener datos
+        _date = request.POST['date']
+        _account = request.POST['account']
+        _amount = request.POST['amount']
+        _category = request.POST['category']
+        _description = request.POST['description']
+        
+        if len(_date) == 0:
+            _date = datetime.date.today().strftime('%Y-%m-%d')
+        
+        with transaction.atomic():
+            MoneyRegister.objects.update_or_create(
+                id=id,
+                defaults={
+                    'date': _date,
+                    'account': _account,
+                    'amount': _amount,
+                    'category_id': _category,
+                    'description': _description
+                }
+            )
+            
+            return redirect('home')
     
     # Eliminar
     if (request.method == "GET" and "eliminar" in request.GET):
         with transaction.atomic():
             # Eliminar registro
-            MoneyRegister.objects.get(id=id).delete()
+            registro.delete()
             
-            # Redireccionar
+        # Redireccionar
         return redirect('home')
-    return redirect('home')
     
+    context = {
+        'registro': registro,
+        'categories': categoria
+    }
+    
+    return render(request, 'editar.html', context)
 
+    
 
 # * Pagina de Not found / Server error
 @login_required(login_url="/login/")

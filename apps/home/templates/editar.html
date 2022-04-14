@@ -1,0 +1,66 @@
+<form action="{% url 'acciones' registro.id %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group mb-3">
+        <label>Cuenta de destino</label>
+        <br>
+        <div class="row">
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="1" {% if registro.account == 1 %}checked{% endif %}> Efectivo </label>
+            </div>
+            <div class="col-6">
+                <label for="account">
+                <input type="radio" name="account" value="2" {% if registro.account == 2 %}checked{% endif %}> Tarjeta </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        <label for="amount">Monto</label>
+        <input type="number" class="form-control" step="0.01" id="amount" name="amount" value="{{ registro.amount }}" placeholder="Monto" required>
+    </div>
+    {% if registro.category_id == 1 or registro.category_id == 2 %}
+    <div class="form-group mb-3" hidden>
+        <select class="form-control" id="category-option" name="category">
+            <option value="{{ registro.category_id }}">{{ registro.category }}</option>
+        </select>
+    </div>
+    {% else %}
+    <div class="form-group mb-3">
+        <label for="category">Categoría</label>
+        <select class="form-control" id="category-option" name="category">
+            <option value="{{ registro.category_id }}" selected>{{ registro.category.name }}</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+    <div class="form-group mb-3">
+        <label for="description">Descripción</label>
+        <input type="text" class="form-control" id="description" name="description" value="{{ registro.description }}" placeholder="Descripción">
+    </div>
+    <div class="mb-3">
+        <label for="date">Fecha</label>
+        <div class="input-group">
+            <span class="input-group-text">
+                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+            </span>
+            <input data-datepicker class="form-control" id="date" name="date" value="{{ registro.date|date:'Y-m-d' }}" type="text" placeholder="yyyy-mm-dd">                                               
+          </div>
+    </div>
+    <div class="modal-footer pb-0">
+        <button type="submit" class="btn btn-secondary guardar-btn" name="guardar">Guardar</button>
+        <button type="button" class="btn ms-auto btn-danger" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+</form>
+
+<script>
+    // Datepicker
+    var datepickers = [].slice.call(document.querySelectorAll('[data-datepicker]'))
+    var datepickersList = datepickers.map(function (el) {
+        return new Datepicker(el, {
+            format:"yyyy-mm-dd",
+            buttonClass: 'btn'
+        });
+    });
+</script>

@@ -1,11 +1,7 @@
 <form action="{% url 'ingreso' %}" method="POST">
     {% csrf_token %}
     <div class="form-group mb-3">
-        <label for="amount">Monto</label>
-        <input type="number" class="form-control" step="0.01" id="amount" name="amount" placeholder="Monto" required>
-    </div>
-    <div class="form-group mb-3">
-        <label>Cuenta de destino</label>
+        <label>Cuenta</label>
         <br>
         <div class="row">
             <div class="col-6">
@@ -17,6 +13,10 @@
                 <input type="radio" name="account" value="2"> Tarjeta </label>
             </div>
         </div>
+    </div>
+    <div class="form-group mb-3">
+        <label for="amount">Monto</label>
+        <input type="number" class="form-control" step="0.01" id="amount" name="amount" placeholder="Monto" required>
     </div>
     <div class="form-group mb-3">
         <label for="description">Descripción</label>

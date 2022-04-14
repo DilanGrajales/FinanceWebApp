@@ -131,16 +131,16 @@
 						{% if transaccion.date == today%}Hoy{% else %}{{ transaccion.date }}{% endif %}
 					</td>
 					<td>
-						<p class="fw-bold text-{% if transaccion.category.type == 1 %}success{% else %}danger{% endif %}">${{ transaccion.amount }}</td>
+						<p class="fw-bold text-{% if transaccion.category.type == 1 %}success{% else %}danger{% endif %}">
+							${{ transaccion.amount }}
+						</p>
 					</td>
 					<td>{{ transaccion.description }}</td>
 					<td>
-						<form action="{% url 'acciones' transaccion.id %}" method="get">
-							<button class="btn btn-sm btn-primary editar-btn" name="editar"">
-								<i class="fas fa-edit icon-sx"></i>
-								Editar
-							</button>
-						</form>
+						<button class="btn btn-sm btn-primary editar-btn" name="editar" data-id="{{transaccion.id}}">
+							<i class=" fas fa-edit icon-sx"></i>
+							Editar
+						</button>
 					</td>
 					<td>
 						<form action="{% url 'acciones' transaccion.id %}" method="get">
@@ -158,7 +158,7 @@
 	<div class="card-footer row text-center fw-bold">
 		<div class="col-4 text-success">Ingresos: ${{ingresos}}</div>
 		<div class="col-4 text-danger">Egresos: ${{egresos}}</div>
-		<div class="col-4 text-{% if total > 0 %}success{% elif total < 0 %}danger{% else %}primary{% endif %}">Total: ${{total}}</div>        
+		<div class="col-4 text-primary">Total:${{total}}</div>
 	</div>
 </div>
 
@@ -193,6 +193,22 @@
 	</div>
 </div>
 <!-- ? ./Modal egresos -->
+
+<!-- ? Modal editar -->
+<div class="modal fade" id="modal-editar">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="h4 modal-title w-100 text-center">Editar</h2>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body modal-body-editar">
+				<!-- Cuerpo en editar.html -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- ? ./Modal editar -->
 {% endblock content %}
 
 
@@ -251,11 +267,11 @@
 			url: `acciones/${id}`,
 			type: 'GET',
 			success: function (data) {
-				$('#modal-ediatr').modal('show');
-				$('#modal-ediatr .modal-body-ediatr').html(data);
+				$('#modal-editar').modal('show');
+				$('#modal-editar .modal-body-editar').html(data);
 			}
 		});
 	});
-	
+
 </script>
 {% endblock javascripts %}
