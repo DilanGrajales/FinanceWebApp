@@ -6,10 +6,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template import loader
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from apps.home.models import *
 from django.db import transaction
 from django.db.models import *
+from django.contrib import messages
 
 
 # Create your views here.
@@ -131,18 +132,23 @@ def ingreso(request):
         _account = request.POST['account']
         _description = request.POST['description']
         
+        # Asignar fecha si se deja vacio el campo
         if len(_date) == 0:
             _date = datetime.date.today().strftime('%Y-%m-%d')
         
-        try:
-            with transaction.atomic():
-                # Guardar registro
-                MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_account, description=_description)
-                
-                # Redireccionar
-                return redirect('home')
-        except:
-            return reverse(reverse_lazy('home'))
+        # Saber a donde retornar dependiendo del tipo de cuenta
+        if _account == '1':
+            retorno = 1
+        else:
+            retorno = 2
+        
+        with transaction.atomic():
+            # Guardar registro
+            MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_account, description=_description)
+            
+            # Redireccionar
+            messages.success(request, 'Transaccion satisfactoria.')
+            return redirect(f'tarjetas/{retorno}')
     
     context = {
         'categories': Categories.objects.filter(type=1)
@@ -163,18 +169,23 @@ def egreso(request):
         _category = request.POST['category']
         _description = request.POST['description']
         
+        # Asignar fecha si se deja vacio el campo
         if len(_date) == 0:
             _date = datetime.date.today().strftime('%Y-%m-%d')
         
-        try:
-            with transaction.atomic():
-                # Guardar registro
-                MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_category, description=_description)
-                
-                # Redireccionar
-                return redirect('home')
-        except:
-            return reverse(reverse_lazy('home'))
+        # Saber a donde retornar dependiendo del tipo de cuenta
+        if _account == '1':
+            retorno = 1
+        else:
+            retorno = 2
+        
+        with transaction.atomic():
+            # Guardar registro
+            MoneyRegister.objects.create(user=request.user, date=_date, account=_account, amount=_amount, category_id=_category, description=_description)
+            
+            # Redireccionar
+            messages.success(request, 'Transaccion satisfactoria.')
+            return redirect(f'tarjetas/{retorno}')
     
     context = {
         'categories': Categories.objects.filter(type=2),
@@ -214,6 +225,8 @@ def acciones(request, id):
                 }
             )
             
+            # Redimensionar
+            messages.success(request, f'Se edito el registro satisfactioriamente de la categoria {registro.category.name}.')
             return redirect(reverse_lazy('cuentas', kwargs={'account_id': _account}))
     
     # Eliminar
@@ -223,6 +236,7 @@ def acciones(request, id):
             registro.delete()
             
         # Redireccionar
+        messages.success(request, f'Se elimino el registro satisfactioriamente de la categoria {registro.category.name}.')
         return redirect(reverse_lazy('cuentas', kwargs={'account_id': registro.account}))
 
     context = {
