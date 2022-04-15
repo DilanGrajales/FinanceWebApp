@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Transacciones{% endblock title %}
+{% block title %}Cuentas{% endblock title %}
 
 {% block content %}
 <div class="row">
@@ -12,174 +12,32 @@
 	{% include 'cards/tarjeta.html' %}
 	<!-- ? ./Card tarjeta -->
 </div>
-
-<div class="card border-0 shadow mb-4 m-auto">
-	<div class="card-body table-responsive">
-		<table class="table table-centered table-hover table-nowrap mb-0 border-0 rounded text-center" id="transacciones">
-			<thead class="thead-light">
-				<tr>
-					<th class="border-0 rounded-start">#</th>
-					<th class="border-0">Categoria</th>
-					<th class="border-0">Fecha</th>
-					<th class="border-0">Monto</th>
-					<th class="border-0">Descripcion</th>
-					<th class="border-0">Editar</th>
-					<th class="border-0 rounded-end">Eliminar</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for transaccion in transacciones %}
-				<tr>
-					<td>{{ forloop.counter }}</td>
-					<td class="fw-bold align-items-center">
-						<i class="fas {{ transaccion.category.icon }} text-muted me-2"></i>
-						{{ transaccion.category.name }}
-					</td>
-					<td>
-						{% if transaccion.date == today%}Hoy{% else %}{{ transaccion.date }}{% endif %}
-					</td>
-					<td>
-						<p class="fw-bold text-{% if transaccion.category.type == 1 %}success{% else %}danger{% endif %}">
-							${{ transaccion.amount }}
-						</p>
-					</td>
-					<td>{{ transaccion.description }}</td>
-					<td>
-						<button class="btn btn-sm btn-primary editar-btn" name="editar" data-id="{{transaccion.id}}">
-							<i class=" fas fa-edit icon-sx"></i>
-							Editar
-						</button>
-					</td>
-					<td>
-						<form action="{% url 'acciones' transaccion.id %}" method="get">
-							<button class="btn btn-sm btn-danger eliminar-btn" name="eliminar" data-id="{{transaccion.id}}">
-								<i class="fas fa-trash icon-sx"></i>
-								Eliminar
-							</button>
-						</form>
-					</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<div class="card-footer row text-center fw-bold">
-		<div class="col-4 text-success">Ingresos: ${{ingresos}}</div>
-		<div class="col-4 text-danger">Egresos: ${{egresos}}</div>
-		<div class="col-4 text-primary">Total:${{total}}</div>
-	</div>
-</div>
-
-<!-- ? Modal ingresos -->
-<div class="modal fade" id="modal-ingresos">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2 class="h4 modal-title w-100 text-center">Ingresos</h2>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body modal-body-ingresos">
-				<!-- Cuerpo en ingresos.html -->
-			</div>
-		</div>
-	</div>
-</div>
-<!-- ? ./Modal ingresos -->
-
-<!-- ? Modal egresos -->
-<div class="modal fade" id="modal-egresos">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2 class="h4 modal-title w-100 text-center">Egresos</h2>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body modal-body-egresos">
-				<!-- Cuerpo en egresos.html -->
-			</div>
-		</div>
-	</div>
-</div>
-<!-- ? ./Modal egresos -->
-
-<!-- ? Modal editar -->
-<div class="modal fade" id="modal-editar">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2 class="h4 modal-title w-100 text-center">Editar</h2>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body modal-body-editar">
-				<!-- Cuerpo en editar.html -->
-			</div>
-		</div>
-	</div>
-</div>
-<!-- ? ./Modal editar -->
 {% endblock content %}
 
 
 {% block javascripts %}
 <script>
-	$("#transacciones").DataTable({
-		"responsive": true,
-		"autoWidth": false,
-		"ordering": false,
-		"paging": false,
-		"language": {
-			"info": "Mostrando _START_ a _END_ de _TOTAL_ totales",
-			"infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-			"infoFiltered": "(filtrado de _MAX_ registros totales)",
-			"zeroRecords": "No se encontraron registros coincidentes",
-			"emptyTable": "Aun no se han registrado gastos / ingresos",
-			"search": "Buscar:",
-			"loadingRecords": "Cargando...",
-			"processing": "Procesando...",
-		},
-	});
-
-	// Estilos personalizados para componentes de datatables
-	$("#transacciones_filter").addClass("pb-2 pe-0");
-	$("#transacciones_filter input").addClass("form-control-sm");
-	$("#transacciones_info").addClass("pt-4 ps-0");
-
-	// Agregar un ingreso
-	$("#ingresos-btn").on("click", function () {
+	// Ver detalles de cuenta efectivo
+	$("#detalles-efectivo-btn").on("click", function () {
 		$.ajax({
-			url: 'ingreso',
+			url: 'tarjetas/1',
 			type: 'GET',
 			success: function (data) {
-				$('#modal-ingresos').modal('show');
-				$('#modal-ingresos .modal-body-ingresos').html(data);
+				window.location.href = "tarjetas/1";
+
 			}
 		});
 	});
 
-	// Agregar un egreso
-	$("#egresos-btn").on("click", function () {
+	// Ver detalles de cuenta tarjeta
+	$("#detalles-tarjeta-btn").on("click", function () {
 		$.ajax({
-			url: 'egreso',
+			url: 'tarjetas/2',
 			type: 'GET',
 			success: function (data) {
-				$('#modal-egresos').modal('show');
-				$('#modal-egresos .modal-body-egresos').html(data);
+				window.location.href = "tarjetas/2";
 			}
 		});
 	});
-
-	// Editar un registro
-	$(".editar-btn").on("click", function () {
-		id = $(this).data("id");
-		$.ajax({
-			url: `acciones/${id}`,
-			type: 'GET',
-			success: function (data) {
-				$('#modal-editar').modal('show');
-				$('#modal-editar .modal-body-editar').html(data);
-			}
-		});
-	});
-
 </script>
 {% endblock javascripts %}

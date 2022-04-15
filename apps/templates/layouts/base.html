@@ -35,10 +35,17 @@
 		
 
 		<!-- Titulos de las pantallas -->
-		<div class="d-block mb-4">
-			<h2 class="h4">
-				{% block title %}{% endblock title %}
-			</h2>
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-4">
+					<h2 class="h4 col-6">
+						{% block title %}{% endblock title %}
+					</h2>
+					<div class="div col-6">
+						<div class='float-end'>{% block breadcrumb %}{% endblock breadcrumb %}</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<!-- Contenido pagina -->
@@ -50,9 +57,66 @@
 		{% include 'includes/footer.html' %}
 	</main>
 
+	<!-- ? Modal ingresos -->
+	<div class="modal fade" id="modal-ingresos">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="h4 modal-title w-100 text-center">Ingresos</h2>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body modal-body-ingresos">
+					<!-- Cuerpo en ingresos.html -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ? ./Modal ingresos -->
+
+	<!-- ? Modal egresos -->
+	<div class="modal fade" id="modal-egresos">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="h4 modal-title w-100 text-center">Egresos</h2>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body modal-body-egresos">
+					<!-- Cuerpo en egresos.html -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ? ./Modal egresos -->
+	
 	<!-- Include de scripts -->
 	{% include 'includes/scripts.html' %}
 
+	<script>
+		// Agregar un ingreso
+		$("#ingresos-btn").on("click", function () {
+			$.ajax({
+				url: '{% url "ingreso" %}',
+				type: 'GET',
+				success: function (data) {
+					$('#modal-ingresos').modal('show');
+					$('#modal-ingresos .modal-body-ingresos').html(data);
+				}
+			});
+		});
+
+		// Agregar un egreso
+		$("#egresos-btn").on("click", function () {
+			$.ajax({
+				url: '{% url "egreso" %}',
+				type: 'GET',
+				success: function (data) {
+					$('#modal-egresos').modal('show');
+					$('#modal-egresos .modal-body-egresos').html(data);
+				}
+			});
+		});
+	</script>
 	<!-- JS especifico para cada pagina  -->
 	{% block javascripts %}{% endblock javascripts %}
 

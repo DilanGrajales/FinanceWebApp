@@ -17,33 +17,8 @@ from django.db.models import *
 @login_required(login_url="/login/")
 def index(request):
     transacciones = MoneyRegister.objects.filter(user=request.user).order_by('-date')
-    hoy = datetime.date.today().strftime('%Y-%m-%d')
-    
-    for transaccion in transacciones:
-        if str(transaccion.date) == hoy:
-            transaccion.date = 'Hoy'
-    
-    # Ingresos
-    try:
-        ingresos = transacciones.aggregate(total=Sum('amount', filter=Q(category__type=1)))
-        if ingresos['total'] is None:
-            ingresos = 0
-        else:
-            ingresos = ingresos['total']
-    except:
-        ingresos = 0
-        
-    # Egresos
-    try:
-        egresos = transacciones.aggregate(total=Sum('amount', filter=Q(category__type=2)))
-        if egresos['total'] is None:
-            egresos = 0
-        else:
-            egresos = egresos['total']
-    except:
-        egresos = 0
 
-    # Datos para cards de efectivo y tarjeta
+    # ? Datos para cards de efectivo y tarjeta
     efectivo = []
     try:
         try:
@@ -116,12 +91,10 @@ def index(request):
         balance = ingresos - egresos
         tarjeta.append(balance)
 
-
     context = {
         'segment': 'categories',
         'efectivo': efectivo,
         'tarjeta': tarjeta,
-        'transacciones': transacciones,
         'total': ingresos - egresos,
         'ingresos': ingresos,
         'egresos': egresos
@@ -131,8 +104,20 @@ def index(request):
 
 
 def cuentas(request, account_id):
+    hoy = datetime.date.today().strftime('%Y-%m-%d')
     
-    return render(request, 'cuentas.html', {})
+    transacciones = MoneyRegister.objects.filter(user=request.user, account=account_id).order_by('-date')
+    
+    for transaccion in transacciones:
+        if str(transaccion.date) == hoy:
+            transaccion.date = 'Hoy'
+            
+    context = {
+        'segment': 'categories',
+        'transacciones': transacciones
+    }
+    
+    return render(request, 'cuentas.html', context)
 
 
 # * Ingreso
@@ -229,7 +214,7 @@ def acciones(request, id):
                 }
             )
             
-            return redirect('home')
+            return redirect(reverse_lazy('cuentas', kwargs={'account_id': _account}))
     
     # Eliminar
     if (request.method == "GET" and "eliminar" in request.GET):
@@ -238,8 +223,8 @@ def acciones(request, id):
             registro.delete()
             
         # Redireccionar
-        return redirect('home')
-    
+        return redirect(reverse_lazy('cuentas', kwargs={'account_id': registro.account}))
+
     context = {
         'registro': registro,
         'categories': categoria
