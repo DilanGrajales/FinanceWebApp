@@ -10,8 +10,8 @@ apps/*/migrations/
 apps/*/__init__.py
 apps/__init__.py
 finance/__init__.py
-apps/static/
-venv_finance/
+#apps/static/
+finance_venv/
 
 # Compiled Java class files
 *.class

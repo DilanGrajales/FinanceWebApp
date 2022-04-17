@@ -4,7 +4,10 @@
     {% if transacciones.0.account == 1 %}Efectivo{% else %}Tarjeta{% endif %}
 {% endblock title %}
 
-{% block breadcrumb %}<a href="{% url 'home' %}" class="btn btn-primary">Regresar</a>{% endblock breadcrumb %}
+{% block breadcrumb %}<a href="{% url 'home' %}" class="btn btn-primary">
+    <i class="fa-solid fa-arrow-left icon-xxs me-2"></i>
+    Regresar
+</a>{% endblock breadcrumb %}
 
 {% block content %}
 <!-- ? Apartado para mostrar mensajes -->
