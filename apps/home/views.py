@@ -1,12 +1,13 @@
 from datetime import datetime
-from multiprocessing import context
+import json
 from django import template
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.template import loader
 from django.urls import reverse, reverse_lazy
-# from django.contrib.auth.models import User
+from django.views import View
 from apps.home.models import *
 from django.db import transaction
 from django.db.models import *
@@ -268,3 +269,55 @@ def pages(request):
     # 505 error page
     except:
         return render(request, 'home/page-500.html', context)
+    
+
+# ? REST API
+class CategoriesView(View):
+    
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    # Listar categorias
+    def get(self, request, id=0):
+        if id > 0:
+            category = list(Categories.objects.filter(id=id).values())
+            data = {'message': 'Success', 'categories': category}
+        else:
+            categories = list(Categories.objects.order_by('-id').values())
+            if len(categories) > 0:
+                data = {'message': 'Success', 'categories': categories}
+            else:
+                data = {'message': 'No se encontraron categorias.'}
+            
+        return JsonResponse(data)
+    
+    @transaction.atomic()
+    def post(self, request):
+        jd = json.loads(request.body)
+        with transaction.atomic():
+            Categories.objects.update_or_create(
+                name=jd['name'],
+                defaults={
+                    'type': jd['type'],
+                    'icon': jd['icon']
+                }
+            )
+            data = {'message': 'Success'}
+            
+        return JsonResponse(data)
+    
+    def put(self, request, id):
+        # ? Este metodo es solventado con el ORM de django utilizando 'update_or_create'
+        pass
+        
+    
+    def delete(self, request, id=0):
+        categories = list(Categories.objects.filter(id=id).order_by('-id').values())
+        if len(categories) > 0:
+            Categories.objects.filter(id=id).delete()
+            data = {'message': 'Success'}
+        else:
+            data = {'message': 'No se encontraron categorias.'}
+            
+        return JsonResponse(data)

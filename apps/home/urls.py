@@ -8,6 +8,9 @@ urlpatterns = [
     path('tarjetas/acciones/<int:id>', views.acciones, name='acciones'),
     path('ingreso', views.ingreso, name='ingreso'),
     path('egreso', views.egreso, name='egreso'),
+    # ? --------------------------------- REST API ---------------------------------
+    path('api/categorias', views.CategoriesView.as_view(), name='categorias_list'),
+    path('api/categorias/<int:id>', views.CategoriesView.as_view(), name='categorias_process'),
 
     # Coincidencia con cualquier archivo html
     re_path(r'^.*\.*', views.pages, name='pages'),
