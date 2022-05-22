@@ -147,5 +147,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_PASSWORD = 'finance_web+app.2022'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = '193075@uptapachula.edu.mx'
-EMAIL_HOST_PASSWORD = 'pousashadanna3'
+EMAIL_HOST_PASSWORD = '@Pousashadanna3'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
