@@ -16,9 +16,6 @@ finance_venv/
 # Compiled Java class files
 *.class
 
-# Configuracion
-siiup/*.py
-
 # Compiled Python bytecode
 *.py[cod]
 
